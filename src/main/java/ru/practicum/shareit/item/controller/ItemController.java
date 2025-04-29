@@ -16,7 +16,7 @@ import java.util.Optional;
 public class ItemController {
     private final ItemService service;
 
-    public ItemController (ItemService service) {
+    public ItemController(ItemService service) {
         this.service = service;
     }
 
