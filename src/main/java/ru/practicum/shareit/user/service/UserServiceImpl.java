@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -11,12 +12,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
-
-    public UserServiceImpl(UserRepository repository) {
-        this.repository = repository;
-    }
 
     @Override
     public UserDto create(UserDto dto) {
@@ -28,7 +26,7 @@ public class UserServiceImpl implements UserService {
     public UserDto update(UserDto dto) {
         User user = UserMapper.toModel(dto);
         if (!repository.findById(user.getId()).isPresent()) {
-            throw new NoSuchElementException("User not found: " + user.getId());
+            throw new NoSuchElementException("Пользователь не найден: " + user.getId());
         }
         return UserMapper.toDto(repository.update(user));
     }
