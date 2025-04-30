@@ -1,15 +1,14 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.item.validation.ItemValidator;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.validation.UserValidator;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
-    private final UserRepository userRepository;
+    private final UserValidator userValidator;
+    private final ItemValidator itemValidator;
 
     @Override
     public ItemDto create(ItemDto dto, Long userId) {
-        User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не найден: " + userId));
+        User owner = userValidator.validateUserExists(userId);
         Item item = ItemMapper.toModel(dto);
         item.setOwner(owner);
         return ItemMapper.toDto(repository.save(item));
@@ -32,12 +31,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto update(Long itemId, ItemDto dto, Long userId) {
-        Item existing = repository.findById(itemId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Вещь не найдена: " + itemId));
+        Item existing = itemValidator.validateItemExists(itemId);
+        itemValidator.validateOwnership(existing, userId);
 
-        if (!existing.getOwner().getId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Только владелец может редактировать: " + itemId);
-        }
         if (dto.getName() != null && !dto.getName().isBlank()) {
             existing.setName(dto.getName());
         }
