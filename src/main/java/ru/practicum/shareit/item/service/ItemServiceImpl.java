@@ -44,7 +44,7 @@ public class ItemServiceImpl implements ItemService {
             existing.setAvailable(dto.getAvailable());
         }
 
-        Item updated = repository.update(existing);
+        Item updated = repository.save(existing);
         return ItemMapper.toDto(updated);
     }
 
