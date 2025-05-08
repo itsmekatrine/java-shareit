@@ -4,28 +4,20 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.Instant;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDto {
-    private Long id;
+public class BookingCreateDto {
+
+    @NotNull(message = "Идентификатор вещи обязателен")
+    private Long itemId;
 
     @NotNull(message = "Дата начала бронирования обязательна")
     private Instant start;
 
     @NotNull(message = "Дата окончания бронирования обязательна")
     private Instant end;
-
-    @NotNull(message = "Идентификатор вещи обязателен")
-    private Long itemId;
-
-    @NotNull(message = "Идентификатор пользователя обязателен")
-    private Long bookerId;
-
-    @NotNull(message = "Статус бронирования обязателен")
-    private BookingStatus status;
 }
