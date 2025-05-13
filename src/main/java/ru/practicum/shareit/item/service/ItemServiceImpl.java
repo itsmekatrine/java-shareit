@@ -64,21 +64,6 @@ public class ItemServiceImpl implements ItemService {
         userValidator.validateUserExists(userId);
         Item item = itemValidator.validateItemExists(itemId);
 
-        LocalDateTime now = LocalDateTime.now();
-        BookingForItemDto last = bookingRepository
-                .findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(itemId, BookingStatus.APPROVED, now)
-                .map(b -> new BookingForItemDto(
-                        b.getId(),
-                        b.getBooker().getId()))
-                .orElse(null);
-
-        BookingForItemDto next = bookingRepository
-                .findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(itemId, BookingStatus.APPROVED, now)
-                .map(b -> new BookingForItemDto(
-                        b.getId(),
-                        b.getBooker().getId()))
-                .orElse(null);
-
         List<CommentDto> comments = commentRepository
                 .findByItemIdOrderByCreated(item.getId())
                 .stream().map(c -> new CommentDto(
@@ -88,6 +73,26 @@ public class ItemServiceImpl implements ItemService {
                         c.getCreated()))
                 .collect(Collectors.toList());
 
+        BookingForItemDto last = null;
+        BookingForItemDto next = null;
+
+        if (item.getOwner().getId().equals(userId)) {
+            LocalDateTime now = LocalDateTime.now();
+
+            last = bookingRepository
+                    .findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(itemId, BookingStatus.APPROVED, now)
+                    .map(b -> new BookingForItemDto(
+                            b.getId(),
+                            b.getBooker().getId()))
+                    .orElse(null);
+
+            next = bookingRepository
+                    .findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(itemId, BookingStatus.APPROVED, now)
+                    .map(b -> new BookingForItemDto(
+                            b.getId(),
+                            b.getBooker().getId()))
+                    .orElse(null);
+        }
         return ItemMapper.toDto(item, last, next, comments);
     }
 

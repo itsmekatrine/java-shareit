@@ -34,6 +34,10 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto create(Long userId, BookingRequestDto dto) {
         User user = userValidator.validateUserExists(userId);
         Item item = itemValidator.validateItemExists(dto.getItemId());
+
+        if (!item.getAvailable()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Вещь недоступна для бронирования");
+        }
         if (item.getOwner().getId().equals(userId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Нельзя бронировать свою вещь");
         }
