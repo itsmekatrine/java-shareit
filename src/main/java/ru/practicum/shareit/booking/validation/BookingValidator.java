@@ -15,15 +15,13 @@ public class BookingValidator {
 
     public Booking validateBookingExists(Long bookingId) {
         return bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Бронирование не найдено: " + bookingId));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Бронирование не найдено: " + bookingId));
     }
 
     public void validateOwner(Booking booking, Long ownerId) {
         Long actualOwner = booking.getItem().getOwner().getId();
         if (!actualOwner.equals(ownerId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Только владелец вещи может менять статус бронирования");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Только владелец вещи может менять статус бронирования");
         }
     }
 
@@ -37,8 +35,7 @@ public class BookingValidator {
 
     public void validateStatusIsWaiting(Booking booking) {
         if (booking.getStatus() != BookingStatus.WAITING) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Нельзя изменить статус бронирования повторно");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Нельзя изменить статус бронирования повторно");
         }
     }
 }

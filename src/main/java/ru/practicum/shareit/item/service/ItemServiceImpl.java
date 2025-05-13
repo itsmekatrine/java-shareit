@@ -1,13 +1,19 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.dto.BookingForItemDto;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentRequestDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.validation.ItemValidator;
 import ru.practicum.shareit.user.model.User;
@@ -24,6 +30,7 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final UserValidator userValidator;
     private final ItemValidator itemValidator;
+    private final CommentRepository commentRepository;
 
     @Override
     public ItemDto create(ItemDto dto, Long userId) {
@@ -60,15 +67,28 @@ public class ItemServiceImpl implements ItemService {
         LocalDateTime now = LocalDateTime.now();
         BookingForItemDto last = bookingRepository
                 .findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(itemId, BookingStatus.APPROVED, now)
-                .map(b -> new BookingForItemDto(b.getId(), b.getBooker().getId()))
+                .map(b -> new BookingForItemDto(
+                        b.getId(),
+                        b.getBooker().getId()))
                 .orElse(null);
 
         BookingForItemDto next = bookingRepository
                 .findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(itemId, BookingStatus.APPROVED, now)
-                .map(b -> new BookingForItemDto(b.getId(), b.getBooker().getId()))
+                .map(b -> new BookingForItemDto(
+                        b.getId(),
+                        b.getBooker().getId()))
                 .orElse(null);
 
-        return ItemMapper.toDto(item, last, next);
+        List<CommentDto> comments = commentRepository
+                .findByItemIdOrderByCreated(item.getId())
+                .stream().map(c -> new CommentDto(
+                        c.getId(),
+                        c.getText(),
+                        c.getAuthor().getName(),
+                        c.getCreated()))
+                .collect(Collectors.toList());
+
+        return ItemMapper.toDto(item, last, next, comments);
     }
 
     @Override
@@ -79,10 +99,7 @@ public class ItemServiceImpl implements ItemService {
         String s = text.toLowerCase();
         return repository.findAll().stream()
                 .filter(Item::getAvailable)
-                .filter(item ->
-                        item.getName().toLowerCase().contains(s) ||
-                                item.getDescription().toLowerCase().contains(s)
-                )
+                .filter(item -> item.getName().toLowerCase().contains(s) || item.getDescription().toLowerCase().contains(s))
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -96,16 +113,27 @@ public class ItemServiceImpl implements ItemService {
         return items.stream()
                 .map(item -> {
                     BookingForItemDto last = bookingRepository
-                            .findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(
-                                    item.getId(), BookingStatus.APPROVED, now)
-                            .map(b -> new BookingForItemDto(b.getId(), b.getBooker().getId()))
+                            .findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(item.getId(), BookingStatus.APPROVED, now)
+                            .map(b -> new BookingForItemDto(
+                                    b.getId(),
+                                    b.getBooker().getId()))
                             .orElse(null);
 
                     BookingForItemDto next = bookingRepository
-                            .findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
-                                    item.getId(), BookingStatus.APPROVED, now)
-                            .map(b -> new BookingForItemDto(b.getId(), b.getBooker().getId()))
+                            .findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(item.getId(), BookingStatus.APPROVED, now)
+                            .map(b -> new BookingForItemDto(
+                                    b.getId(),
+                                    b.getBooker().getId()))
                             .orElse(null);
+
+                    List<CommentDto> comments = commentRepository
+                            .findByItemIdOrderByCreated(item.getId())
+                            .stream().map(c -> new CommentDto(
+                                    c.getId(),
+                                    c.getText(),
+                                    c.getAuthor().getName(),
+                                    c.getCreated()))
+                            .collect(Collectors.toList());
 
                     return new ItemDto(
                             item.getId(),
@@ -114,9 +142,38 @@ public class ItemServiceImpl implements ItemService {
                             item.getAvailable(),
                             item.getRequest(),
                             last,
-                            next
+                            next,
+                            comments
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto addComment(Long userId, Long itemId, CommentRequestDto dto) {
+        User user = userValidator.validateUserExists(userId);
+        Item item = itemValidator.validateItemExists(itemId);
+
+        LocalDateTime now = LocalDateTime.now();
+        boolean hasBooked = bookingRepository
+                .findByBookerIdAndItemIdAndEndBefore(userId, itemId, now)
+                .stream().findAny().isPresent();
+        if (!hasBooked) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользователь не брал эту вещь в аренду или аренда ещё не закончилась");
+        }
+
+        Comment comment = new Comment();
+        comment.setText(dto.getText());
+        comment.setItem(item);
+        comment.setAuthor(user);
+        comment.setCreated(now);
+        Comment saved = commentRepository.save(comment);
+
+        return new CommentDto(
+                saved.getId(),
+                saved.getText(),
+                saved.getAuthor().getName(),
+                saved.getCreated()
+        );
     }
 }

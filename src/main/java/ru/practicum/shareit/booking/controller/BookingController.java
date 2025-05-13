@@ -34,7 +34,8 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingDto approveBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId, @RequestParam boolean approved) {
+    public BookingDto approveBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId,
+                                     @RequestParam boolean approved) {
         return bookingService.approve(userId, bookingId, approved);
     }
 
@@ -43,7 +44,7 @@ public class BookingController {
         List<Booking> waiting = bookingRepository
                 .findByItemOwnerIdAndStatus(ownerId, BookingStatus.WAITING, Pageable.unpaged());
         if (waiting.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No waiting bookings");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Нет бронирований в статусе waiting");
         }
         Long bookingId = waiting.get(0).getId();
         return bookingService.approve(ownerId, bookingId, approved);
@@ -55,16 +56,14 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> getBookingsForBooker(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<BookingDto> getBookingsForBooker(@RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL") BookingState state,
             @PageableDefault(sort = "start", direction = Sort.Direction.DESC) Pageable pageable) {
         return bookingService.findByBooker(userId, state, pageable);
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getBookingsForOwner(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
+    public List<BookingDto> getBookingsForOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL") BookingState state,
             @PageableDefault(sort = "start", direction = Sort.Direction.DESC) Pageable pageable) {
         return bookingService.findByOwner(userId, state, pageable);
