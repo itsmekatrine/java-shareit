@@ -28,11 +28,10 @@ public class BookingController {
     private final BookingRepository bookingRepository;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)  // вернёт 201
+    @ResponseStatus(HttpStatus.CREATED)
     public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody BookingRequestDto dto) {
         return bookingService.create(userId, dto);
     }
-
 
     @PatchMapping("/{bookingId}")
     public BookingDto approveBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId, @RequestParam boolean approved) {
@@ -41,7 +40,6 @@ public class BookingController {
 
     @PatchMapping
     public BookingDto approveFirstWaiting(@RequestHeader("X-Sharer-User-Id") Long ownerId, @RequestParam boolean approved) {
-        // найдём первое бронирование в статусе WAITING для вещей этого владельца
         List<Booking> waiting = bookingRepository
                 .findByItemOwnerIdAndStatus(ownerId, BookingStatus.WAITING, Pageable.unpaged());
         if (waiting.isEmpty()) {

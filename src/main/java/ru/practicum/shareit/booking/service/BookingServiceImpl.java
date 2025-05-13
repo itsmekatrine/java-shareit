@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
@@ -30,19 +29,15 @@ public class BookingServiceImpl implements BookingService {
     private final UserValidator userValidator;
     private final ItemValidator itemValidator;
     private final BookingValidator bookingValidator;
-    private static final Sort SORT_DESC = Sort.by("start").descending();
 
     @Override
     public BookingDto create(Long userId, BookingRequestDto dto) {
         User user = userValidator.validateUserExists(userId);
         Item item = itemValidator.validateItemExists(dto.getItemId());
         if (item.getOwner().getId().equals(userId)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "Нельзя бронировать свою вещь");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Нельзя бронировать свою вещь");
         }
-        Booking saved = bookingRepository.save(
-                BookingMapper.toModel(user, item, dto)
-        );
+        Booking saved = bookingRepository.save(BookingMapper.toModel(user, item, dto));
         return BookingMapper.toDto(saved);
     }
 
