@@ -18,4 +18,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
             "    OR UPPER(i.description) LIKE UPPER(CONCAT('%', :text, '%'))" +
             "      )")
     List<Item> search(@Param("text") String text);
+
+    List<Item> findByOwnerId(Long ownerId);
 }

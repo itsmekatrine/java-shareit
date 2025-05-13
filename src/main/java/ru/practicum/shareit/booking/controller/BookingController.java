@@ -2,12 +2,19 @@ package ru.practicum.shareit.booking.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingCreateDto;
+import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.List;
@@ -18,30 +25,34 @@ import java.util.List;
 @Validated
 public class BookingController {
     private final BookingService bookingService;
+    private final BookingRepository bookingRepository;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public BookingDto createBooking(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
-            @Valid @RequestBody BookingCreateDto bookingCreateDto
-    ) {
-        return bookingService.create(userId, bookingCreateDto);
+    @ResponseStatus(HttpStatus.CREATED)  // вернёт 201
+    public BookingDto createBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @Valid @RequestBody BookingRequestDto dto) {
+        return bookingService.create(userId, dto);
     }
 
+
     @PatchMapping("/{bookingId}")
-    public BookingDto approveBooking(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
-            @PathVariable Long bookingId,
-            @RequestParam boolean approved
-    ) {
+    public BookingDto approveBooking(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId, @RequestParam boolean approved) {
         return bookingService.approve(userId, bookingId, approved);
     }
 
+    @PatchMapping
+    public BookingDto approveFirstWaiting(@RequestHeader("X-Sharer-User-Id") Long ownerId, @RequestParam boolean approved) {
+        // найдём первое бронирование в статусе WAITING для вещей этого владельца
+        List<Booking> waiting = bookingRepository
+                .findByItemOwnerIdAndStatus(ownerId, BookingStatus.WAITING, Pageable.unpaged());
+        if (waiting.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No waiting bookings");
+        }
+        Long bookingId = waiting.get(0).getId();
+        return bookingService.approve(ownerId, bookingId, approved);
+    }
+
     @GetMapping("/{bookingId}")
-    public BookingDto getBookingById(
-            @RequestHeader("X-Sharer-User-Id") Long userId,
-            @PathVariable Long bookingId
-    ) {
+    public BookingDto getBookingById(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable Long bookingId) {
         return bookingService.getById(userId, bookingId);
     }
 
@@ -49,19 +60,15 @@ public class BookingController {
     public List<BookingDto> getBookingsForBooker(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL") BookingState state,
-            @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return bookingService.findByBooker(userId, state, from, size);
+            @PageableDefault(sort = "start", direction = Sort.Direction.DESC) Pageable pageable) {
+        return bookingService.findByBooker(userId, state, pageable);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getBookingsForOwner(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "ALL") BookingState state,
-            @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return bookingService.findByOwner(userId, state, from, size);
+            @PageableDefault(sort = "start", direction = Sort.Direction.DESC) Pageable pageable) {
+        return bookingService.findByOwner(userId, state, pageable);
     }
 }

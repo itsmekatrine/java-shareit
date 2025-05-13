@@ -5,19 +5,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingCreateDto {
+public class BookingRequestDto {
 
     @NotNull(message = "Идентификатор вещи обязателен")
     private Long itemId;
 
     @NotNull(message = "Дата начала бронирования обязательна")
-    private Instant start;
+    private LocalDateTime start;
 
     @NotNull(message = "Дата окончания бронирования обязательна")
-    private Instant end;
+    private LocalDateTime end;
 }

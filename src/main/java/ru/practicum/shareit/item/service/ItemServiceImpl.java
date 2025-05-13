@@ -2,6 +2,9 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingForItemDto;
+import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
@@ -10,14 +13,15 @@ import ru.practicum.shareit.item.validation.ItemValidator;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.validation.UserValidator;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository repository;
+    private final BookingRepository bookingRepository;
     private final UserValidator userValidator;
     private final ItemValidator itemValidator;
 
@@ -49,17 +53,22 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Optional<ItemDto> getById(Long itemId, Long userId) {
-        return repository.findById(itemId)
-                .map(ItemMapper::toDto);
-    }
+    public ItemDto getById(Long itemId, Long userId) {
+        userValidator.validateUserExists(userId);
+        Item item = itemValidator.validateItemExists(itemId);
 
-    @Override
-    public List<ItemDto> getAllByUser(Long userId) {
-        return repository.findAll().stream()
-                .filter(item -> item.getOwner() != null && item.getOwner().getId().equals(userId))
-                .map(ItemMapper::toDto)
-                .collect(Collectors.toList());
+        LocalDateTime now = LocalDateTime.now();
+        BookingForItemDto last = bookingRepository
+                .findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(itemId, BookingStatus.APPROVED, now)
+                .map(b -> new BookingForItemDto(b.getId(), b.getBooker().getId()))
+                .orElse(null);
+
+        BookingForItemDto next = bookingRepository
+                .findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(itemId, BookingStatus.APPROVED, now)
+                .map(b -> new BookingForItemDto(b.getId(), b.getBooker().getId()))
+                .orElse(null);
+
+        return ItemMapper.toDto(item, last, next);
     }
 
     @Override
@@ -75,6 +84,39 @@ public class ItemServiceImpl implements ItemService {
                                 item.getDescription().toLowerCase().contains(s)
                 )
                 .map(ItemMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ItemDto> getAllByUser(Long userId) {
+        userValidator.validateUserExists(userId);
+        List<Item> items = repository.findByOwnerId(userId);
+        LocalDateTime now = LocalDateTime.now();
+
+        return items.stream()
+                .map(item -> {
+                    BookingForItemDto last = bookingRepository
+                            .findFirstByItemIdAndStatusAndStartBeforeOrderByStartDesc(
+                                    item.getId(), BookingStatus.APPROVED, now)
+                            .map(b -> new BookingForItemDto(b.getId(), b.getBooker().getId()))
+                            .orElse(null);
+
+                    BookingForItemDto next = bookingRepository
+                            .findFirstByItemIdAndStatusAndStartAfterOrderByStartAsc(
+                                    item.getId(), BookingStatus.APPROVED, now)
+                            .map(b -> new BookingForItemDto(b.getId(), b.getBooker().getId()))
+                            .orElse(null);
+
+                    return new ItemDto(
+                            item.getId(),
+                            item.getName(),
+                            item.getDescription(),
+                            item.getAvailable(),
+                            item.getRequest(),
+                            last,
+                            next
+                    );
+                })
                 .collect(Collectors.toList());
     }
 }
