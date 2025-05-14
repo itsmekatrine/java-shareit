@@ -15,10 +15,12 @@ import java.util.List;
 public class ItemDto {
     private Long id;
 
-    @Size(min = 1, max = 200, message = "Название не может быть пустым")
+    @NotNull(message = "Название не может быть пустым")
+    @Size(min = 1, max = 200)
     private String name;
 
-    @Size(min = 1, message = "Описание не может быть пустым")
+    @NotNull(message = "Описание не может быть пустым")
+    @Size(min = 1)
     private String description;
 
     @NotNull(message = "Поле available обязательно")

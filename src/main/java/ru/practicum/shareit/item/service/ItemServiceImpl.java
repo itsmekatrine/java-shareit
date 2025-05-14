@@ -104,7 +104,13 @@ public class ItemServiceImpl implements ItemService {
         String s = text.toLowerCase();
         return repository.findAll().stream()
                 .filter(Item::getAvailable)
-                .filter(item -> item.getName().toLowerCase().contains(s) || item.getDescription().toLowerCase().contains(s))
+                .filter(item -> {
+                    if (item.getName() != null && item.getName().toLowerCase().contains(s)) {
+                        return true;
+                    }
+                    String desc = item.getDescription();
+                    return desc != null && desc.toLowerCase().contains(s);
+                })
                 .map(ItemMapper::toDto)
                 .collect(Collectors.toList());
     }
