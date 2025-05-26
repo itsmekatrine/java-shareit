@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS public.items (
   available BOOLEAN NOT NULL,
   owner_id BIGINT NOT NULL,
   request_id BIGINT,
-  CONSTRAINT fk_items_owner FOREIGN KEY (owner_id) REFERENCES public.users (id)
-  -- CONSTRAINT fk_items_request FOREIGN KEY (request_id) REFERENCES public.item_requests (id)
+  CONSTRAINT fk_items_owner FOREIGN KEY (owner_id) REFERENCES public.users (id),
+  CONSTRAINT fk_items_request FOREIGN KEY (request_id) REFERENCES public.item_requests (id)
 );
 
 -- таблица для бронирования
