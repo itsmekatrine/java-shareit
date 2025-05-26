@@ -16,6 +16,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.validation.ItemValidator;
+import ru.practicum.shareit.request.validation.ItemRequestValidator;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.validation.UserValidator;
 
@@ -31,12 +32,17 @@ public class ItemServiceImpl implements ItemService {
     private final UserValidator userValidator;
     private final ItemValidator itemValidator;
     private final CommentRepository commentRepository;
+    private final ItemRequestValidator requestValidator;
 
     @Override
     public ItemDto create(ItemDto dto, Long userId) {
         User owner = userValidator.validateUserExists(userId);
         Item item = ItemMapper.toModel(dto);
         item.setOwner(owner);
+        if (dto.getRequestId() != null) {
+            requestValidator.validateRequestExists(dto.getRequestId());
+            item.setRequestId(dto.getRequestId());
+        }
         return ItemMapper.toDto(repository.save(item));
     }
 
@@ -151,7 +157,7 @@ public class ItemServiceImpl implements ItemService {
                             item.getName(),
                             item.getDescription(),
                             item.getAvailable(),
-                            item.getRequest(),
+                            item.getRequestId(),
                             last,
                             next,
                             comments
