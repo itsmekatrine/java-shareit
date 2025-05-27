@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.client.BaseClient;
 import ru.practicum.user.dto.UserCreateDto;
+import ru.practicum.user.dto.UserUpdateDto;
 
 @Service
 public class UserClient extends BaseClient {
@@ -28,7 +29,7 @@ public class UserClient extends BaseClient {
         return post("", dto);
     }
 
-    public ResponseEntity<Object> updateUser(long userId, UserCreateDto dto) {
+    public ResponseEntity<Object> updateUser(long userId, UserUpdateDto dto) {
         return patch("/" + userId, dto);
     }
 

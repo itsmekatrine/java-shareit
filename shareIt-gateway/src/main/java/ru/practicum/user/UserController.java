@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.user.dto.UserCreateDto;
+import ru.practicum.user.dto.UserUpdateDto;
 
 @Controller
 @RequestMapping("/users")
@@ -24,8 +25,7 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<Object> updateUser(@PathVariable long userId,
-                                             @RequestBody @Valid UserCreateDto dto) {
+    public ResponseEntity<Object> updateUser(@PathVariable long userId, @RequestBody @Valid UserUpdateDto dto) {
         log.info("Обновление пользователя по id={}, {}", userId, dto);
         return userClient.updateUser(userId, dto);
     }
