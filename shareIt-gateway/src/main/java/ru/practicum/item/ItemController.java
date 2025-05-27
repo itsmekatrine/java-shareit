@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.item.dto.CommentRequestDto;
 import ru.practicum.item.dto.ItemCreateDto;
 
 @RestController
@@ -22,6 +23,13 @@ public class ItemController {
         return itemClient.createItem(userId, dto);
     }
 
+    @PostMapping("/{itemId}/comment")
+    public ResponseEntity<Object> addComment(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
+                                             @RequestBody @Valid CommentRequestDto dto) {
+        log.info("Добавление отзыва {} пользователем {} для вещи {}", dto, userId, itemId);
+        return itemClient.addComment(userId, itemId, dto);
+    }
+
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId,
             @RequestBody @Valid ItemCreateDto dto) {
@@ -30,9 +38,9 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ResponseEntity<Object> getItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId) {
+    public ResponseEntity<Object> getById(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long itemId) {
         log.info("Получение вещи по id={} для пользователя {}", itemId, userId);
-        return itemClient.getItem(userId, itemId);
+        return itemClient.getById(userId, itemId);
     }
 
     @GetMapping

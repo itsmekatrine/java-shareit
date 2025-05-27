@@ -71,7 +71,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemValidator.validateItemExists(itemId);
 
         List<CommentDto> comments = commentRepository
-                .findByItemIdOrderByCreated(item.getId())
+                .findByItemIdOrderByCreatedDesc(item.getId())
                 .stream().map(c -> new CommentDto(
                         c.getId(),
                         c.getText(),
@@ -144,7 +144,7 @@ public class ItemServiceImpl implements ItemService {
                             .orElse(null);
 
                     List<CommentDto> comments = commentRepository
-                            .findByItemIdOrderByCreated(item.getId())
+                            .findByItemIdOrderByCreatedDesc(item.getId())
                             .stream().map(c -> new CommentDto(
                                     c.getId(),
                                     c.getText(),
