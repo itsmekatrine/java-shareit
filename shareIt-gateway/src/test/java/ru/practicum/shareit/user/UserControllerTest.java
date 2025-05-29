@@ -84,6 +84,7 @@ class UserControllerTest {
     @Test
     void getUserById() throws Exception {
         UserDto userDto = new UserDto(1L, "Alex", "alex@example.com");
+
         when(userClient.getUser(eq(1L)))
                 .thenReturn(ResponseEntity.ok(userDto));
 
@@ -119,8 +120,8 @@ class UserControllerTest {
 
     @Test
     void deleteUser() throws Exception {
-        when(userClient.deleteUser(1L)).
-                thenReturn(ResponseEntity.noContent().build());
+        when(userClient.deleteUser(1L))
+                .thenReturn(ResponseEntity.noContent().build());
 
         mvc.perform(delete("/users/1")).andExpect(status().isNoContent());
 
