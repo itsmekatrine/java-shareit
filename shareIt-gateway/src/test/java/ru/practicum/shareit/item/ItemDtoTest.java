@@ -6,17 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
+import org.springframework.context.annotation.Configuration;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
-class ItemDtoTest {
+public class ItemDtoTest {
 
     @Autowired
     JacksonTester<ItemDto> json;
 
     private ItemDto dto;
+
+    @Configuration
+    static class TestConfig {
+    }
 
     @BeforeEach
     void setup() {

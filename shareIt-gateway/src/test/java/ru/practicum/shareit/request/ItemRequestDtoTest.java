@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import org.springframework.context.annotation.Configuration;
 import ru.practicum.shareit.request.dto.ItemResponseDto;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,10 @@ public class ItemRequestDtoTest {
     JacksonTester<ItemRequestDto> json;
 
     private ItemRequestDto dto;
+
+    @Configuration
+    static class TestConfig {
+    }
 
     @BeforeEach
     void setup() {
