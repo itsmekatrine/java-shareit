@@ -21,8 +21,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -131,6 +130,40 @@ public class BookingControllerTest {
                         .param("approved", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status", is("APPROVED")));
+    }
+
+    @Test
+    void approveFirstWaiting() throws Exception {
+        Booking w1 = new Booking();
+        w1.setItem(item);
+        w1.setBooker(booker);
+        w1.setStart(start);
+        w1.setEnd(end);
+        w1.setStatus(BookingStatus.WAITING);
+        w1 = bookingRepo.save(w1);
+
+        Booking w2 = new Booking();
+        w2.setItem(item);
+        w2.setBooker(booker);
+        w2.setStart(start.plusDays(1));
+        w2.setEnd(end.plusDays(1));
+        w2.setStatus(BookingStatus.WAITING);
+        bookingRepo.save(w2);
+
+        mvc.perform(patch("/bookings")
+                        .header("X-Sharer-User-Id", owner.getId())
+                        .param("approved", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(w1.getId().intValue())))
+                .andExpect(jsonPath("$.status", is("APPROVED")));
+    }
+
+    @Test
+    void approveFirstWaitingNotFound() throws Exception {
+        mvc.perform(patch("/bookings")
+                        .header("X-Sharer-User-Id", owner.getId())
+                        .param("approved", "true"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
