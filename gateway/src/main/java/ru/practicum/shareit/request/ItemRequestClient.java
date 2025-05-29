@@ -12,6 +12,7 @@ import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 
 @Service
 public class ItemRequestClient extends BaseClient {
+
     private static final String API_PREFIX = "/requests";
 
     @Autowired
