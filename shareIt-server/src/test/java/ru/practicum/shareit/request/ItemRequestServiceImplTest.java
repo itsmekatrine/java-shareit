@@ -64,6 +64,7 @@ public class ItemRequestServiceImplTest {
         assertThat(dto.getItems()).isEmpty();
         assertThat(dto.getCreated()).isNotNull();
     }
+
     @Test
     void findByUserShouldReturnOwnRequestsWithItems() {
         // создаём запросы
