@@ -95,6 +95,7 @@ public class BaseClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
         if (userId != null) {
             headers.set("X-Sharer-User-Id", String.valueOf(userId));
         }
