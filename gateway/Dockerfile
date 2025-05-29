@@ -1,5 +1,12 @@
+# stage 1: build jar
+FROM maven:3.8.6-openjdk-21 AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# stage 2: run
 FROM eclipse-temurin:21-jre-jammy
-VOLUME /tmp
-ARG JAR_FILE=target/gateway-0.0.1-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+ENTRYPOINT ["java","-jar","app.jar"]
