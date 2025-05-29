@@ -9,11 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.request.ItemRequestClient;
-import ru.practicum.request.ItemRequestController;
-import ru.practicum.request.dto.ItemRequestCreateDto;
-import ru.practicum.request.dto.ItemRequestDto;
-import ru.practicum.request.dto.ItemResponseDto;
+import ru.practicum.shareit.ShareItGateway;
+import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
+import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ItemRequestController.class)
-@ContextConfiguration(classes = ru.practicum.ShareItGateway.class)
+@ContextConfiguration(classes = ShareItGateway.class)
 class ItemRequestControllerTest {
 
     @Autowired

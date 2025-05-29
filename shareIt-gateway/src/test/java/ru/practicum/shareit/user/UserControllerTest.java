@@ -10,11 +10,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.user.UserClient;
-import ru.practicum.user.UserController;
-import ru.practicum.user.dto.UserCreateDto;
-import ru.practicum.user.dto.UserDto;
-import ru.practicum.user.dto.UserUpdateDto;
+import ru.practicum.shareit.ShareItGateway;
+import ru.practicum.shareit.user.dto.UserCreateDto;
+import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.dto.UserUpdateDto;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = UserController.class)
-@ContextConfiguration(classes = ru.practicum.ShareItGateway.class)
+@ContextConfiguration(classes = ShareItGateway.class)
 class UserControllerTest {
 
     @Autowired

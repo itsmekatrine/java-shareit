@@ -1,4 +1,4 @@
-package ru.practicum.request.dto;
+package ru.practicum.shareit.request.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

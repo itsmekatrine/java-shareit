@@ -1,4 +1,4 @@
-package ru.practicum.request;
+package ru.practicum.shareit.request;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.request.dto.ItemRequestCreateDto;
+import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 
 @RestController
 @RequestMapping("/requests")

@@ -7,8 +7,9 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import org.springframework.test.context.ContextConfiguration;
-import ru.practicum.booking.dto.BookingDto;
-import ru.practicum.booking.dto.BookingState;
+import ru.practicum.shareit.ShareItGateway;
+import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingState;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
-@ContextConfiguration(classes = ru.practicum.ShareItGateway.class)
+@ContextConfiguration(classes = ShareItGateway.class)
 public class BookingDtoTest {
 
     @Autowired

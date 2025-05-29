@@ -7,12 +7,13 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import org.springframework.test.context.ContextConfiguration;
-import ru.practicum.item.dto.ItemDto;
+import ru.practicum.shareit.ShareItGateway;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
-@ContextConfiguration(classes = ru.practicum.ShareItGateway.class)
+@ContextConfiguration(classes = ShareItGateway.class)
 class ItemDtoTest {
 
     @Autowired

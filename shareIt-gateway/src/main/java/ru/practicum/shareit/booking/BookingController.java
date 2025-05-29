@@ -1,4 +1,4 @@
-package ru.practicum.booking;
+package ru.practicum.shareit.booking;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.booking.dto.BookItemRequestDto;
-import ru.practicum.booking.dto.BookingState;
+import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.booking.dto.BookingState;
 
 @Controller
 @RequestMapping(path = "/bookings")
