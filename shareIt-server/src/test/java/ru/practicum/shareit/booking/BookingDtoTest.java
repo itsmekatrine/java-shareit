@@ -75,16 +75,14 @@ public class BookingDtoTest {
 
     @Test
     void deserializeBookingDto() throws IOException {
-        String input = """
-            {
-              "id": 99,
-              "start": "2025-06-01T08:30:00",
-              "end":   "2025-06-02T08:30:00",
-              "status": "APPROVED",
-              "booker": { "id": 21 },
-              "item":   { "id": 5, "name": "Book" }
-            }
-            """;
+        String input = "{\n" +
+                "  \"id\": 99,\n" +
+                "  \"start\": \"2025-06-01T08:30:00\",\n" +
+                "  \"end\":   \"2025-06-02T08:30:00\",\n" +
+                "  \"status\": \"APPROVED\",\n" +
+                "  \"booker\": { \"id\": 21 },\n" +
+                "  \"item\":   { \"id\": 5, \"name\": \"Book\" }\n" +
+                "}";
 
         BookingDto result = json.parseObject(input);
 

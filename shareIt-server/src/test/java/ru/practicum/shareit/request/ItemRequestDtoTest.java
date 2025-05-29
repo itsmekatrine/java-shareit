@@ -61,16 +61,14 @@ public class ItemRequestDtoTest {
 
     @Test
     void deserializeItemRequestDto() throws IOException {
-        String jsonString = """
-            {
-              "id": 10,
-              "description": "Looking for a book",
-              "created": "2025-05-29T12:34:56",
-              "items": [
-                { "id": 3, "name": "Book", "ownerId": 7 }
-              ]
-            }
-            """;
+        String jsonString = "{\n" +
+                "  \"id\": 10,\n" +
+                "  \"description\": \"Looking for a book\",\n" +
+                "  \"created\": \"2025-05-29T12:34:56\",\n" +
+                "  \"items\": [\n" +
+                "    { \"id\": 3, \"name\": \"Book\", \"ownerId\": 7 }\n" +
+                "  ]\n" +
+                "}";
 
         ItemRequestDto result = json.parseObject(jsonString);
 

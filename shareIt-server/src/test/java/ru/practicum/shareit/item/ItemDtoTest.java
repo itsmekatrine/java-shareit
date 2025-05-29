@@ -61,15 +61,13 @@ public class ItemDtoTest {
 
     @Test
     void deserializeItemDto() throws IOException {
-        String content = """
-            {
-              "id": 99,
-              "name": "Book",
-              "description": "For Java",
-              "available": false,
-              "requestId": null
-            }
-            """;
+        String content = "{\n" +
+                "  \"id\": 99,\n" +
+                "  \"name\": \"Book\",\n" +
+                "  \"description\": \"For Java\",\n" +
+                "  \"available\": false,\n" +
+                "  \"requestId\": null\n" +
+                "}";
 
         ItemDto result = json.parseObject(content);
 
