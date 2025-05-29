@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
+import org.springframework.test.context.ContextConfiguration;
+import ru.practicum.ShareItGateway;
 import ru.practicum.user.dto.UserDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
+@ContextConfiguration(classes = ShareItGateway.class)
 class UserDtoTest {
 
     @Autowired

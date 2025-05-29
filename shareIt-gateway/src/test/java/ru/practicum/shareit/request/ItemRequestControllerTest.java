@@ -7,7 +7,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.ShareItGateway;
 import ru.practicum.request.ItemRequestClient;
 import ru.practicum.request.ItemRequestController;
 import ru.practicum.request.dto.ItemRequestCreateDto;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ItemRequestController.class)
+@ContextConfiguration(classes = ShareItGateway.class)
 class ItemRequestControllerTest {
 
     @Autowired
