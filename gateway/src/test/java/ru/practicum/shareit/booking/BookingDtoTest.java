@@ -49,7 +49,6 @@ public class BookingDtoTest {
 
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(100);
         assertThat(result).extractingJsonPathStringValue("$.status").isEqualTo("WAITING");
-
         assertThat(result).extractingJsonPathNumberValue("$.booker.id").isEqualTo(42);
         assertThat(result).extractingJsonPathNumberValue("$.item.id").isEqualTo(5);
         assertThat(result).extractingJsonPathStringValue("$.item.name").isEqualTo("Book");
