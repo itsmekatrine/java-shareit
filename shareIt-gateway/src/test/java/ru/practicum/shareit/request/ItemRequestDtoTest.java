@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.json.JsonContent;
 import org.springframework.test.context.ContextConfiguration;
-import ru.practicum.ShareItGateway;
 import ru.practicum.request.dto.ItemRequestDto;
 import ru.practicum.request.dto.ItemResponseDto;
 
@@ -17,7 +16,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JsonTest
-@ContextConfiguration(classes = ShareItGateway.class)
+@ContextConfiguration(classes = ru.practicum.ShareItGateway.class)
 public class ItemRequestDtoTest {
 
     @Autowired

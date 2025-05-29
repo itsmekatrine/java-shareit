@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.ShareItGateway;
 import ru.practicum.item.ItemClient;
 import ru.practicum.item.ItemController;
 import ru.practicum.item.dto.CommentDto;
@@ -30,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = ItemController.class)
-@ContextConfiguration(classes = ShareItGateway.class)
+@ContextConfiguration(classes = ru.practicum.ShareItGateway.class)
 class ItemControllerTest {
 
     @Autowired
