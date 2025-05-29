@@ -157,4 +157,15 @@ public class ItemServiceImplTest {
         ItemDto dto = itemService.getById(item.getId(), owner.getId());
         assertThat(dto.getComments()).hasSize(1);
     }
+
+    @Test
+    void searchEmpty() {
+        assertThat(itemService.search(null)).isEmpty();
+        assertThat(itemService.search("   ")).isEmpty();
+    }
+
+    @Test
+    void searchNoMatches() {
+        assertThat(itemService.search("cup")).isEmpty();
+    }
 }
