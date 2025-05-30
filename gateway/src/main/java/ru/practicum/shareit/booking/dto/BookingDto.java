@@ -1,33 +1,32 @@
 package ru.practicum.shareit.booking.dto;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDto {
-    private Long id;
+    Long id;
 
     @NotNull(message = "Дата начала бронирования обязательна")
-    private LocalDateTime start;
+    LocalDateTime start;
 
     @NotNull(message = "Дата окончания бронирования обязательна")
-    private LocalDateTime end;
+    LocalDateTime end;
 
     @NotNull(message = "Статус бронирования обязателен")
-    private BookingState status;
+    BookingState status;
 
     @NotNull
-    private BookerInfo booker;
+    BookerInfo booker;
 
     @NotNull
-    private ItemInfo item;
+    ItemInfo item;
 
     @Data
     @NoArgsConstructor

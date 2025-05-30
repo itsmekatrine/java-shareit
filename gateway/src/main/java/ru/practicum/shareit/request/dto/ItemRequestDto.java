@@ -2,9 +2,11 @@ package ru.practicum.shareit.request.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,14 +14,15 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemRequestDto {
-    private Long id;
+    Long id;
 
     @NotNull(message = "Запрос не может быть пустым")
     @Size(min = 1)
-    private String description;
+    String description;
 
     @NotNull(message = "Дата создания обязательна")
-    private LocalDateTime created;
-    private List<ItemResponseDto> items;
+    LocalDateTime created;
+    List<ItemResponseDto> items;
 }

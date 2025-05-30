@@ -1,9 +1,11 @@
 package ru.practicum.shareit.booking.dto;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDateTime;
@@ -11,23 +13,24 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BookingDto {
-    private Long id;
+    Long id;
 
     @NotNull(message = "Дата начала бронирования обязательна")
-    private LocalDateTime start;
+    LocalDateTime start;
 
     @NotNull(message = "Дата окончания бронирования обязательна")
-    private LocalDateTime end;
+    LocalDateTime end;
 
     @NotNull(message = "Статус бронирования обязателен")
-    private BookingStatus status;
+    BookingStatus status;
 
     @NotNull
-    private BookerInfo booker;
+    BookerInfo booker;
 
     @NotNull
-    private ItemInfo item;
+    ItemInfo item;
 
     @Data
     @NoArgsConstructor
